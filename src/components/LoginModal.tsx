@@ -29,12 +29,24 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
         const accountResponse = await libraryApi.getAccount();
         console.log('Account Response:', accountResponse);
         
-        if (accountResponse && accountResponse.result) {
-           onLoginSuccess(accountResponse.result);
-           onClose();
-        } else {
-            console.error('Account response missing result:', accountResponse);
+        if (accountResponse) {
+          // The API structure for getAccount seems to return the user object directly in 'result' or 'data'
+          // Based on api.ts: return response.data.data;
+          // So accountResponse IS the data object.
+          // Let's check if it has user_nm directly or if it's nested.
+          const userData = accountResponse.result || accountResponse;
+          console.log('User Data extracted:', userData);
+
+          if (userData) {
+            onLoginSuccess(userData);
+            onClose();
+          } else {
+            console.error('Could not extract user data from:', accountResponse);
             setError('Failed to fetch user details.');
+          }
+        } else {
+          console.error('Account response missing:', accountResponse);
+          setError('Failed to fetch user details.');
         }
       } else {
         console.error('Login failed:', response);

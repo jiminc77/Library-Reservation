@@ -687,7 +687,8 @@ export default function Home() {
         onClose={() => setIsLoginModalOpen(false)}
         onLoginSuccess={(u) => {
           setUser(u);
-          toast.success(`Welcome back, ${u.user_nm}`);
+          const name = u.user_nm || u.USER_NM || u.user_id || "Student";
+          toast.success(`Welcome back, ${name}`);
         }}
       />
 
