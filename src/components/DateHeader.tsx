@@ -26,16 +26,18 @@ export function DateHeader({ selectedDate, onDateChange }: DateHeaderProps) {
         className="flex items-center gap-2 px-4 py-1.5 cursor-pointer hover:bg-white/50 rounded-md transition-colors relative"
         onClick={() => {
           try {
+            const input = dateInputRef.current as any;
             // Try explicit showPicker first
-            if (dateInputRef.current && 'showPicker' in dateInputRef.current) {
-              dateInputRef.current.showPicker();
+            if (input && typeof input.showPicker === 'function') {
+              input.showPicker();
             } else {
-              dateInputRef.current?.focus();
-              dateInputRef.current?.click(); // Try triggering click
+              input?.focus();
+              input?.click(); // Try triggering click
             }
           } catch (e) {
             console.log("showPicker failed", e);
-            dateInputRef.current?.click();
+            const input = dateInputRef.current as any;
+            input?.click();
           }
         }}
       >
