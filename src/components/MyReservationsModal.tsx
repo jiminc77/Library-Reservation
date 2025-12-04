@@ -262,9 +262,9 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-gray-200">
         <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-white z-10">
-          <h2 className="text-2xl font-bold text-gray-900">My Reservations</h2>
+          <h2 className="text-xl font-bold text-gray-900">My Reservations</h2>
           <div className="flex items-center gap-2">
             <button 
                 onClick={fetchReservations}
@@ -317,7 +317,7 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
                             {items.map((reservation) => (
                               <div
                                 key={reservation.RES_ID}
-                                className="border rounded-lg p-4 flex items-center justify-between hover:bg-gray-50 transition-colors bg-white shadow-sm"
+                                className="border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:bg-gray-50 transition-colors bg-white shadow-sm"
                               >
                                 <div>
                                   <div className="font-medium text-lg text-gray-900">
