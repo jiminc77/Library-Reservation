@@ -59,10 +59,19 @@ export default function Home() {
       if (token) {
         try {
           const response = await libraryApi.getAccount();
-          if (response.success) {
-            setUser(response.result);
+          console.log("Session check response:", response);
+
+          // Handle various response structures
+          const userData = response.result || response;
+
+          if (userData && (userData.user_id || userData.USER_ID)) {
+            setUser(userData);
           } else {
-            localStorage.removeItem("accessToken");
+            console.warn("Invalid session data:", response);
+            // Only remove if explicitly failed or empty
+            if (response.success === false) {
+              localStorage.removeItem("accessToken");
+            }
           }
         } catch (error) {
           console.error("Failed to restore session", error);
