@@ -670,7 +670,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="h-full flex flex-col items-center justify-center pb-32">
-            <div className="bg-white px-8 py-12 rounded-2xl shadow-sm border text-center max-w-md w-full">
+              <div className="bg-white px-8 py-12 rounded-2xl shadow-sm border border-gray-200 text-center max-w-md w-full">
               <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <LogIn className="w-8 h-8 text-blue-600" />
               </div>
@@ -691,7 +691,7 @@ export default function Home() {
 
       {/* Floating Booking Action Bar */}
       {selectedSlots.length > 0 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-lg border border-gray-200 rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center gap-3 md:gap-4 animate-in slide-in-from-bottom-4 z-50 w-max max-w-[90%] justify-between">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-lg border border-gray-200 rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center gap-3 md:gap-4 animate-in slide-in-from-bottom-4 z-50 w-max max-w-[90%] justify-between">
           <div className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">
             {selectedSlots.length} slot{selectedSlots.length > 1 ? 's' : ''}
           </div>
