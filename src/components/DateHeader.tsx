@@ -24,7 +24,15 @@ export function DateHeader({ selectedDate, onDateChange }: DateHeaderProps) {
       
       <div 
         className="flex items-center gap-2 px-4 py-1.5 cursor-pointer hover:bg-white/50 rounded-md transition-colors relative"
-        onClick={() => dateInputRef.current?.showPicker()}
+        onClick={() => {
+          try {
+            dateInputRef.current?.showPicker();
+          } catch (e) {
+            // Fallback for browsers that don't support showPicker (input click should handle it)
+            console.log("showPicker not supported or failed", e);
+            dateInputRef.current?.focus();
+          }
+        }}
       >
         <CalendarIcon className="w-4 h-4 text-gray-500" />
         <span className="text-sm font-semibold text-gray-900 min-w-[140px] text-center">
@@ -33,7 +41,7 @@ export function DateHeader({ selectedDate, onDateChange }: DateHeaderProps) {
         <input
           ref={dateInputRef}
           type="date"
-          className="absolute opacity-0 pointer-events-none top-0 left-0 w-full h-full"
+          className="absolute opacity-0 top-0 left-0 w-full h-full cursor-pointer z-10"
           value={format(selectedDate, "yyyy-MM-dd")}
           onChange={(e) => {
             if (e.target.value) {
