@@ -46,9 +46,9 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col md:flex-row min-h-[180px] md:min-h-[240px]">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row min-h-[180px] md:min-h-[240px]">
       {/* Room Info - Left Side */}
-      <div className="w-full md:w-80 shrink-0 bg-gray-50 p-4 md:p-6 flex flex-col justify-center border-b md:border-b-0 md:border-r">
+      <div className="w-full md:w-80 shrink-0 bg-gray-50 p-4 md:p-6 flex flex-col justify-center border-b border-gray-200 md:border-b-0 md:border-r">
         <div className="flex flex-col gap-2 md:gap-4">
           <h3 className="font-bold text-lg md:text-xl text-gray-900 leading-tight">{room.name}</h3>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
@@ -73,21 +73,21 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
       {/* Timeline - Right Side */}
       <div className="flex-1 p-6 overflow-x-auto flex items-center">
         <div className="w-full">
-          <div className="flex min-w-[600px] border rounded-lg overflow-hidden">
+          <div className="flex min-w-[600px] border border-gray-200 rounded-lg overflow-hidden">
             {hours.map((hour) => {
               const status = getSlotStatus(room.id, hour);
               const isSelected = isSlotSelected(room.id, `${hour}:00`);
               
               return (
                 <div key={hour} className="flex-1 flex flex-col">
-                  <div className="h-6 bg-gray-50 border-b border-r text-[10px] text-gray-500 flex items-center justify-center">
+                  <div className="h-6 bg-gray-50 border-b border-r border-gray-200 text-[10px] text-gray-500 flex items-center justify-center">
                     {hour === 0 ? "24" : hour}
                   </div>
                   <button
                     onClick={() => (status === "available" || status === "my-booking") && onSlotClick(room, `${hour}:00`)}
                     disabled={status === "booked"}
                     className={cn(
-                      "h-28 border-r transition-all relative",
+                      "h-28 border-r border-gray-200 transition-all relative",
                       status === "available" && !isSelected && "hover:bg-green-50 cursor-pointer bg-white",
                       isSelected && "bg-green-100 cursor-pointer hover:bg-green-200",
                       status === "booked" && "bg-gray-100 cursor-not-allowed", // Lighter gray for booked

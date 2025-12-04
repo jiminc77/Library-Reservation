@@ -691,23 +691,25 @@ export default function Home() {
 
       {/* Floating Booking Action Bar */}
       {selectedSlots.length > 0 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-lg border rounded-full px-6 py-3 flex items-center gap-4 animate-in slide-in-from-bottom-4 z-50">
-          <div className="text-sm font-medium text-gray-900">
-            {selectedSlots.length} slot{selectedSlots.length > 1 ? 's' : ''} selected
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-lg border border-gray-200 rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center gap-3 md:gap-4 animate-in slide-in-from-bottom-4 z-50 w-max max-w-[90%] justify-between">
+          <div className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">
+            {selectedSlots.length} slot{selectedSlots.length > 1 ? 's' : ''}
           </div>
-          <button
-            onClick={handleConfirmBooking}
-            disabled={isLoading}
-            className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            {isLoading ? "Booking..." : "Confirm Booking"}
-          </button>
-          <button
-            onClick={() => setSelectedSlots([])}
-            className="text-gray-500 hover:text-gray-700 p-1"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleConfirmBooking}
+              disabled={isLoading}
+              className="bg-blue-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+            >
+              {isLoading ? "Booking..." : "Confirm"}
+            </button>
+            <button
+              onClick={() => setSelectedSlots([])}
+              className="text-gray-500 hover:text-gray-700 p-1"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
 

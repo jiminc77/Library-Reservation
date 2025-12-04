@@ -26,11 +26,16 @@ export function DateHeader({ selectedDate, onDateChange }: DateHeaderProps) {
         className="flex items-center gap-2 px-4 py-1.5 cursor-pointer hover:bg-white/50 rounded-md transition-colors relative"
         onClick={() => {
           try {
-            dateInputRef.current?.showPicker();
+            // Try explicit showPicker first
+            if (dateInputRef.current && 'showPicker' in dateInputRef.current) {
+              dateInputRef.current.showPicker();
+            } else {
+              dateInputRef.current?.focus();
+              dateInputRef.current?.click(); // Try triggering click
+            }
           } catch (e) {
-            // Fallback for browsers that don't support showPicker (input click should handle it)
-            console.log("showPicker not supported or failed", e);
-            dateInputRef.current?.focus();
+            console.log("showPicker failed", e);
+            dateInputRef.current?.click();
           }
         }}
       >
@@ -41,7 +46,8 @@ export function DateHeader({ selectedDate, onDateChange }: DateHeaderProps) {
         <input
           ref={dateInputRef}
           type="date"
-          className="absolute opacity-0 top-0 left-0 w-full h-full cursor-pointer z-10"
+          className="absolute top-0 left-0 w-full h-full cursor-pointer z-20"
+          style={{ opacity: 0 }} 
           value={format(selectedDate, "yyyy-MM-dd")}
           onChange={(e) => {
             if (e.target.value) {
