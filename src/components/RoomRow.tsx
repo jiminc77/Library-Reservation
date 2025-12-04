@@ -46,21 +46,21 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col md:flex-row min-h-[240px]">
+    <div className="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col md:flex-row min-h-[180px] md:min-h-[240px]">
       {/* Room Info - Left Side */}
-      <div className="w-full md:w-80 shrink-0 bg-gray-50 p-6 flex flex-col justify-center border-b md:border-b-0 md:border-r">
-        <div className="flex flex-col gap-4">
-          <h3 className="font-bold text-xl text-gray-900 leading-tight">{room.name}</h3>
-          <div className="space-y-2 text-sm text-gray-600">
-            <div className="flex items-center gap-3">
+      <div className="w-full md:w-80 shrink-0 bg-gray-50 p-4 md:p-6 flex flex-col justify-center border-b md:border-b-0 md:border-r">
+        <div className="flex flex-col gap-2 md:gap-4">
+          <h3 className="font-bold text-lg md:text-xl text-gray-900 leading-tight">{room.name}</h3>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-gray-400" />
               <span>{room.capacity} People</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-gray-400" />
               <span>{room.floor}</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 w-full md:w-auto">
               <Zap className="w-4 h-4 text-gray-400" />
               <span className="truncate" title={room.equipment.join(", ")}>
                 {room.equipment.length > 0 ? room.equipment.join(", ") : "No Equipment"}

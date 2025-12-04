@@ -489,18 +489,24 @@ export default function Home() {
 
         {/* Row 2: Control Bar */}
         {user && (
-          <div className="flex justify-between items-center px-6 py-3 border-t border-gray-100 bg-white">
+          <div className="flex flex-col md:flex-row justify-between items-center px-4 md:px-6 py-3 border-t border-gray-100 bg-white gap-4 md:gap-0">
+
+            {/* Mobile: Date Picker First */}
+            <div className="w-full md:hidden flex justify-center">
+              <DateHeader selectedDate={selectedDate} onDateChange={(d) => { setSelectedDate(d); setSelectedSlots([]); }} />
+            </div>
+
             {/* Left: Filters */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
               {/* Floor Filter */}
               <div className="relative" ref={floorDropdownRef}>
                 <button
                   onClick={() => setIsFloorDropdownOpen(!isFloorDropdownOpen)}
-                  className="flex items-center justify-between w-[130px] px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between w-[110px] md:w-[130px] px-2 md:px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <Filter className="w-4 h-4 text-gray-500" />
-                    <span>{selectedFloor === "All" ? "All Floors" : selectedFloor}</span>
+                    <span className="truncate">{selectedFloor === "All" ? "All" : selectedFloor}</span>
                   </div>
                   <ChevronDown className="w-3 h-3 text-gray-400" />
                 </button>
@@ -530,11 +536,11 @@ export default function Home() {
               <div className="relative" ref={capacityDropdownRef}>
                 <button
                   onClick={() => setIsCapacityDropdownOpen(!isCapacityDropdownOpen)}
-                  className="flex items-center justify-between w-[150px] px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between w-[120px] md:w-[150px] px-2 md:px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-gray-500" />
-                    <span>{minCapacity === 0 ? "Any" : `${minCapacity} Person${minCapacity > 1 ? 's' : ''}`}</span>
+                    <span className="truncate">{minCapacity === 0 ? "Any" : `${minCapacity} Ppl`}</span>
                   </div>
                   <ChevronDown className="w-3 h-3 text-gray-400" />
                 </button>
@@ -559,15 +565,47 @@ export default function Home() {
                   </div>
                 )}
               </div>
+
+              {/* Mobile: Actions in same row as filters */}
+              <div className="flex md:hidden items-center gap-1 ml-auto">
+                <button
+                  onClick={fetchData}
+                  disabled={isLoading || !user}
+                  className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors disabled:opacity-30"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 21h5v-5" />
+                  </svg>
+                </button>
+                {user && (
+                  <>
+                    <button
+                      onClick={() => setIsMyReservationsModalOpen(true)}
+                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    >
+                      <List className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                    >
+                      <LogOut className="w-5 h-5" />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Center: Date Picker */}
-            <div className="flex-1 flex justify-center">
+            {/* Desktop: Date Picker Center */}
+            <div className="hidden md:flex flex-1 justify-center">
               <DateHeader selectedDate={selectedDate} onDateChange={(d) => { setSelectedDate(d); setSelectedSlots([]); }} />
             </div>
 
-            {/* Right: Actions */}
-            <div className="flex items-center gap-3">
+            {/* Desktop: Actions Right */}
+            <div className="hidden md:flex items-center gap-3">
               <button
                 onClick={fetchData}
                 disabled={isLoading || !user}
