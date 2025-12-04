@@ -173,6 +173,57 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
   
   const reservations = reservationsRef.current;
 
+  const handleCancelAll = async (items: MyReservation[]) => {
+    const cancellableItems = items.filter(i => i.RES_STATUS_NM !== "취소");
+    if (cancellableItems.length === 0) return;
+
+    setConfirmState({
+      isOpen: true,
+      title: "Cancel All Reservations",
+      message: `Are you sure you want to cancel all ${cancellableItems.length} reservations for this date?`,
+      confirmText: "Cancel All",
+      isDestructive: true,
+      onConfirm: async () => {
+        try {
+          let successCount = 0;
+          let failCount = 0;
+
+          // Process sequentially to avoid overwhelming the API or hitting rate limits
+          for (const item of cancellableItems) {
+            try {
+              const response = await libraryApi.cancelReservation({
+                ROOM_ID: item.ROOM_ID,
+                RES_YYYYMMDD: item.RES_YYYYMMDD,
+                RES_HOUR: item.RES_HOUR,
+                RES_ID: item.RES_ID
+              });
+
+              if (response && (response.success !== false)) {
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (e) {
+              console.error(`Failed to cancel ${item.RES_ID}`, e);
+              failCount++;
+            }
+          }
+
+          if (successCount > 0) {
+            toast.success(`Cancelled ${successCount} reservations.${failCount > 0 ? ` Failed to cancel ${failCount}.` : ''}`);
+            fetchReservations();
+          } else {
+            toast.error("Failed to cancel reservations.");
+          }
+
+        } catch (error) {
+          console.error("Bulk cancellation failed", error);
+          toast.error("An error occurred during bulk cancellation.");
+        }
+      }
+    });
+  };
+
   const handleCancel = async (res: MyReservation) => {
     setConfirmState({
       isOpen: true,
@@ -249,10 +300,18 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
                         return acc;
                       }, {} as Record<string, typeof reservations>)).map(([date, items]) => (
                         <div key={date} className="relative">
-                          <div className="sticky top-0 bg-gray-50 py-2 z-10 px-6 border-b border-gray-100">
+                          <div className="sticky top-0 bg-gray-50 py-2 z-10 px-6 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="font-bold text-gray-700">
                               {date.substring(0, 4)}-{date.substring(4, 6)}-{date.substring(6, 8)}
                             </h3>
+                            {items.some(i => i.RES_STATUS_NM !== "취소") && (
+                              <button
+                                onClick={() => handleCancelAll(items)}
+                                className="text-sm text-red-600 hover:text-red-700 font-medium hover:bg-red-50 px-3 py-1 rounded-full transition-colors"
+                              >
+                                Cancel All
+                              </button>
+                            )}
                           </div>
                           <div className="space-y-3 px-6 py-4">
                             {items.map((reservation) => (

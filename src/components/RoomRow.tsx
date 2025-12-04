@@ -15,9 +15,20 @@ interface RoomRowProps {
   selectedSlots: { roomId: string; time: string }[];
 }
 
-const HOURS = Array.from({ length: 16 }, (_, i) => i + 9); // 09:00 to 24:00 (00:00)
+import { getOperatingHours } from "@/lib/constants";
+
+interface RoomRowProps {
+  room: Room;
+  reservations: Reservation[];
+  selectedDate: Date;
+  onSlotClick: (room: Room, time: string) => void;
+  currentUserId?: string;
+  selectedSlots: { roomId: string; time: string }[];
+}
 
 export function RoomRow({ room, reservations, selectedDate, onSlotClick, currentUserId, selectedSlots }: RoomRowProps) {
+  const hours = getOperatingHours(selectedDate);
+
   const getSlotStatus = (roomId: string, hour: number) => {
     const timeStr = `${hour.toString().padStart(2, "0")}:00`;
     const reservation = reservations.find(
@@ -36,7 +47,6 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
 
   return (
     <div className="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col md:flex-row min-h-[240px]">
-      {/* Room Info - Left Side */}
       {/* Room Info - Left Side */}
       <div className="w-full md:w-80 shrink-0 bg-gray-50 p-6 flex flex-col justify-center border-b md:border-b-0 md:border-r">
         <div className="flex flex-col gap-4">
@@ -64,14 +74,14 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
       <div className="flex-1 p-6 overflow-x-auto flex items-center">
         <div className="w-full">
           <div className="flex min-w-[600px] border rounded-lg overflow-hidden">
-            {HOURS.map((hour) => {
+            {hours.map((hour) => {
               const status = getSlotStatus(room.id, hour);
               const isSelected = isSlotSelected(room.id, `${hour}:00`);
               
               return (
                 <div key={hour} className="flex-1 flex flex-col">
                   <div className="h-6 bg-gray-50 border-b border-r text-[10px] text-gray-500 flex items-center justify-center">
-                    {hour}
+                    {hour === 0 ? "24" : hour}
                   </div>
                   <button
                     onClick={() => (status === "available" || status === "my-booking") && onSlotClick(room, `${hour}:00`)}
