@@ -685,7 +685,7 @@ export default function Home() {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h2>
               <p className="text-gray-600 mb-8">
-                Please login with your student ID to view room availability and make reservations.
+                  Please login with your library ID to view room availability and make reservations.
               </p>
               <button
                 onClick={() => setIsLoginModalOpen(true)}

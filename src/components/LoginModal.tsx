@@ -72,20 +72,20 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
 
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">Login to GIST Library</h2>
-          <p className="text-gray-500 mt-2">Please enter your student ID and password</p>
+          <p className="text-gray-500 mt-2">Please enter your library ID and password</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">
-              Student ID
+              Library ID
             </label>
             <input
               type="text"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               className="w-full p-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 bg-gray-50 focus:bg-white transition-all"
-              placeholder="Enter your Student ID"
+              placeholder="Enter your Library ID"
               required
             />
           </div>
