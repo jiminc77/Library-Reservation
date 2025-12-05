@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
-import { X, Calendar, Clock, RotateCw } from 'lucide-react';
+import { X, Calendar, Clock, RotateCw, Users, MapPin } from 'lucide-react';
 import { libraryApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { ConfirmModal } from './ConfirmModal';
@@ -20,6 +20,10 @@ interface MyReservation {
   RES_STATUS_NM: string;
   ROOM_ID: string;
   STATUS?: string;
+  // Derived fields
+  formattedName?: string;
+  capacity?: number;
+  floor?: string;
 }
 
 export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsModalProps) {
@@ -51,8 +55,30 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
     }
   }, [isOpen, user]);
 
-  const formatRoomName = (name: string) => {
-    return name.replace(/, Room .* \((\d+)\)$/, ", $1");
+  // Helper to parse room info (duplicated from page.tsx for consistency)
+  const parseRoomInfo = (facNm: string) => {
+    const match = facNm.match(/\((\d+)\)$/);
+    const roomNum = match ? parseInt(match[1]) : 0;
+    let capacity = 6;
+    let name = `Group Study Room, ${roomNum}`;
+    let floor = facNm.includes("2F") ? "2F" : facNm.includes("3F") ? "3F" : facNm.includes("4F") ? "4F" : "1F";
+
+    if (floor === "2F") {
+      if (roomNum >= 219 && roomNum <= 236) {
+        capacity = 1;
+        name = `Small-sized Carrels, ${roomNum}`;
+      } else if (roomNum >= 205 && roomNum <= 210) {
+        capacity = 5;
+      } else if (roomNum >= 202 && roomNum <= 204) {
+        capacity = 8;
+      }
+    } else if (floor === "3F") {
+      if (roomNum >= 302 && roomNum <= 307) {
+        capacity = 10;
+      }
+    }
+
+    return { name, capacity, floor };
   };
 
   const fetchReservations = async () => {
@@ -81,7 +107,6 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
       }
 
       // 2. Fetch reservations in chunks
-      // 2. Fetch reservations in chunks
       // Reduce to specific months to avoid rate limiting: [-1, 0, 1] (near past/future) and [12] (target future date)
       const months = [-1, 0, 1, 12]; 
       
@@ -97,9 +122,6 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
                 START_DT: start,
                 END_DT: end
             });
-            console.log(`Response for ${start}-${end}:`, res);
-            console.log("Response keys:", Object.keys(res));
-            if (res.data) console.log("Response.data keys:", Object.keys(res.data));
             
             let list = [];
             if (Array.isArray(res)) {
@@ -115,8 +137,7 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
             } else if (res.data && res.data.result && Array.isArray(res.data.result)) {
                 list = res.data.result;
             }
-            
-            console.log(`Found ${list.length} items in list`);
+
             return list;
         } catch (e) {
             console.error(`Failed to fetch for ${start}-${end}`, e);
@@ -125,9 +146,7 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
       });
 
       const results = await Promise.all(promises);
-      console.log("Results from Promise.all:", results);
       const allReservations = results.flat();
-      console.log("Flattened reservations:", allReservations.length, allReservations);
 
       // 3. Map names and set state
       const mappedReservations = allReservations.map((res: any) => {
@@ -139,6 +158,8 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
         const FAC_NM = roomMap[ROOM_ID] || res.FAC_NM || res.fac_nm || res.facNm || `Room ${ROOM_ID}`;
         const RES_STATUS_NM = res.RES_STATUS_NM || res.res_status_nm || res.resStatusNm || "Unknown";
 
+        const { name, capacity, floor } = parseRoomInfo(FAC_NM);
+
         return {
             ...res,
             RES_ID,
@@ -146,7 +167,10 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
             RES_YYYYMMDD,
             RES_HOUR,
             FAC_NM,
-            RES_STATUS_NM
+          RES_STATUS_NM,
+          formattedName: name,
+          capacity,
+          floor
         };
       });
       console.log("Mapped reservations:", mappedReservations.length, mappedReservations);
@@ -320,10 +344,20 @@ export function MyReservationsModal({ isOpen, onClose, user }: MyReservationsMod
                                 className="border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:bg-gray-50 transition-colors bg-white shadow-sm"
                               >
                                 <div>
-                                  <div className="font-medium text-lg text-gray-900">
-                                    {formatRoomName(reservation.FAC_NM)}
+                                  <div className="font-bold text-base text-gray-900">
+                                    {reservation.formattedName}
                                   </div>
-                                  <div className="flex items-center gap-2 text-gray-600 mt-1">
+                                  <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
+                                    <div className="flex items-center gap-1">
+                                      <Users className="w-3.5 h-3.5" />
+                                      <span>{reservation.capacity} People</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <MapPin className="w-3.5 h-3.5" />
+                                      <span>{reservation.floor}</span>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm text-gray-600 mt-2">
                                       <Clock className="w-4 h-4" />
                                       <span>{reservation.RES_HOUR}:00 - {reservation.RES_HOUR + 1}:00</span>
                                   </div>
