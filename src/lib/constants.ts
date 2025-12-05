@@ -43,7 +43,7 @@ export function getOperatingHours(date: Date): number[] {
     const normalHours = Array.from({ length: 15 }, (_, i) => i + 9); // 9 to 23
     return [...lateNight, ...normalHours];
   } else {
-    // Normal Period: 9 to 23 (User said hide 24)
-    return Array.from({ length: 15 }, (_, i) => i + 9); // 9 to 23
+    // Normal Period: 8 to 23 (User said hide 24)
+    return Array.from({ length: 16 }, (_, i) => i + 8); // 8 to 23
   }
 }

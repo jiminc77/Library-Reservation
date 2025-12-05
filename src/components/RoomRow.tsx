@@ -121,14 +121,14 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
               <span>Available</span>
             </div>
             <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded bg-gray-300"></div>
+              <span>Booked</span>
+            </div>
+            <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded bg-green-100 border border-green-200 flex items-center justify-center">
                  <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
               </div>
               <span>Selected</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-gray-300"></div>
-              <span>Booked</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded bg-blue-100 border border-blue-200 flex items-center justify-center">
