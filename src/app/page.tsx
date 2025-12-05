@@ -16,6 +16,8 @@ import Image from "next/image";
 import Logo from "./logo.svg";
 import { toast } from "sonner";
 
+const ADMIN_ID = "20215179";
+
 export default function Home() {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -26,6 +28,10 @@ export default function Home() {
   const [rooms, setRooms] = React.useState<Room[]>([]);
   const [user, setUser] = React.useState<User | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  // robust check for admin ID
+  const currentUserId = user?.user_id || (user as any)?.USER_ID;
+  const isAdmin = String(currentUserId) === ADMIN_ID;
 
   // Confirm Modal State
   const [confirmState, setConfirmState] = React.useState<{
@@ -387,7 +393,7 @@ export default function Home() {
       const myDailyReservations = reservations.filter(
         (r) => r.userId === user.user_id && r.date === format(selectedDate, "yyyy-MM-dd")
       );
-      if (myDailyReservations.length + selectedSlots.length >= 4) {
+      if (!isAdmin && myDailyReservations.length + selectedSlots.length >= 4) {
         toast.error("You can only book up to 4 hours per day.");
         return;
       }
@@ -421,11 +427,13 @@ export default function Home() {
       const allHours = [...existingHours, ...newHours].sort((a, b) => a - b);
 
       // Check for gaps
-      for (let i = 0; i < allHours.length - 1; i++) {
-        if (allHours[i + 1] - allHours[i] === 2) {
-          toast.error(`Cannot leave a 1-hour gap between reservations (e.g., ${allHours[i]}:00 and ${allHours[i + 1]}:00).`);
-          setIsLoading(false);
-          return;
+      if (!isAdmin) {
+        for (let i = 0; i < allHours.length - 1; i++) {
+          if (allHours[i + 1] - allHours[i] === 2) {
+            toast.error(`Cannot leave a 1-hour gap between reservations (e.g., ${allHours[i]}:00 and ${allHours[i + 1]}:00).`);
+            setIsLoading(false);
+            return;
+          }
         }
       }
 
@@ -502,7 +510,7 @@ export default function Home() {
 
             {/* Mobile: Date Picker First */}
             <div className="w-full md:hidden flex justify-center">
-              <DateHeader selectedDate={selectedDate} onDateChange={(d) => { setSelectedDate(d); setSelectedSlots([]); }} />
+              <DateHeader selectedDate={selectedDate} onDateChange={(d) => { setSelectedDate(d); setSelectedSlots([]); }} isAdmin={isAdmin} />
             </div>
 
             {/* Left: Filters */}
@@ -610,7 +618,7 @@ export default function Home() {
 
             {/* Desktop: Date Picker Center */}
             <div className="hidden md:flex flex-1 justify-center">
-              <DateHeader selectedDate={selectedDate} onDateChange={(d) => { setSelectedDate(d); setSelectedSlots([]); }} />
+              <DateHeader selectedDate={selectedDate} onDateChange={(d) => { setSelectedDate(d); setSelectedSlots([]); }} isAdmin={isAdmin} />
             </div>
 
             {/* Desktop: Actions Right */}
@@ -675,6 +683,11 @@ export default function Home() {
                   No rooms match your filters.
                 </div>
               )}
+            </div>
+
+            {/* Footer */}
+            <div className="pt-12 pb-8 text-center">
+              <span className="text-xs text-gray-400 font-medium tracking-wide">Made by Jimin</span>
             </div>
           </div>
         ) : (
