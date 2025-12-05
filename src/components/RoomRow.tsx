@@ -73,24 +73,24 @@ export function RoomRow({ room, reservations, selectedDate, onSlotClick, current
       {/* Timeline - Right Side */}
       <div className="flex-1 p-6 overflow-x-auto flex items-center">
         <div className="w-full">
-          <div className="flex min-w-[600px] border border-gray-200 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-8 md:flex md:min-w-[600px] bg-gray-200 gap-px border border-gray-200 rounded-lg overflow-hidden">
             {hours.map((hour) => {
               const status = getSlotStatus(room.id, hour);
               const isSelected = isSlotSelected(room.id, `${hour}:00`);
               
               return (
-                <div key={hour} className="flex-1 flex flex-col">
-                  <div className="h-6 bg-gray-50 border-b border-r border-gray-200 text-[10px] text-gray-500 flex items-center justify-center">
+                <div key={hour} className="flex flex-col bg-white md:flex-1">
+                  <div className="h-6 bg-gray-50 text-[10px] text-gray-500 flex items-center justify-center">
                     {hour === 0 ? "24" : hour}
                   </div>
                   <button
                     onClick={() => (status === "available" || status === "my-booking") && onSlotClick(room, `${hour}:00`)}
                     disabled={status === "booked"}
                     className={cn(
-                      "h-28 border-r border-gray-200 transition-all relative",
+                      "h-12 md:h-28 transition-all relative w-full",
                       status === "available" && !isSelected && "hover:bg-green-50 cursor-pointer bg-white",
                       isSelected && "bg-green-100 cursor-pointer hover:bg-green-200",
-                      status === "booked" && "bg-gray-100 cursor-not-allowed", // Lighter gray for booked
+                      status === "booked" && "bg-gray-100 cursor-not-allowed",
                       status === "my-booking" && "bg-blue-50 cursor-pointer hover:bg-blue-100"
                     )}
                     title={`${hour}:00 - ${status}`}
